@@ -1,39 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        // JDK que tu as installé
-        JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.15.6-hotspot'
-        PATH = "${env.JAVA_HOME}\\bin;${env.PATH};C:\\Program Files\\Apache\\Maven\\apache-maven-3.9.0\\bin"
-    }
-
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/tasnim-araar/Devops.git'
-            }
-        }
-
-        stage('Build & Package') {
-            steps {
-                bat 'java -version'
-                bat 'mvn clean package'
-            }
-        }
-
-        stage('Archive Artifact') {
-            steps {
-                archiveArtifacts artifacts: '*/target/.jar', allowEmptyArchive: true
+                git credentialsId: 'github-token',
+                    url: 'https://github.com/ahmedmhadbi/devopsahmed.git',
+                    branch: 'main'
             }
         }
     }
 
     post {
-        failure {
-            echo 'Le build a échoué !'
-        }
         success {
-            echo 'Build terminé avec succès !'
+            echo 'Pipeline terminé avec succès !'
+        }
+        failure {
+            emailext (
+                to: "ahmed.mhadbi@esprit.tn",
+                subject: "❌ Build Failed : ${env.JOB_NAME}",
+                body: "Le build Jenkins a échoué.\nVoir console output : ${env.BUILD_URL}"
+            )
         }
     }
 }

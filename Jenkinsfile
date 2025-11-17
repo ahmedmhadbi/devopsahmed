@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 git credentialsId: 'github-token',
@@ -12,19 +13,19 @@ pipeline {
 
         stage('Build Maven') {
             steps {
-                sh "mvn clean install -DskipTests=false"
+                bat "mvn clean install -DskipTests=false"
             }
         }
 
         stage('Tests') {
             steps {
-                sh "mvn test"
+                bat "mvn test"
             }
         }
 
         stage('Package') {
             steps {
-                sh "mvn package"
+                bat "mvn package"
             }
         }
     }

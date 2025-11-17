@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven3'       // 👉 le nom configuré dans "Global Tool Configuration"
-        jdk 'JDK21'          // 👉 si tu veux explicitement utiliser Java 21
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -17,21 +12,18 @@ pipeline {
 
         stage('Build Maven') {
             steps {
-                echo "📦 Compilation du projet Maven..."
                 sh "mvn clean install -DskipTests=false"
             }
         }
 
         stage('Tests') {
             steps {
-                echo "🧪 Exécution des tests..."
                 sh "mvn test"
             }
         }
 
         stage('Package') {
             steps {
-                echo "📁 Packaging de l'application..."
                 sh "mvn package"
             }
         }
